@@ -1,15 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import Modal from 'react-native-modal';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { COLORS, NOTES, LABELS } from '../data/dummy-data';
+import { COLORS } from '../data/dummy-data';
+import { NotesContext } from '../context/NotesContext';
+import { LabelsContext } from '../context/LabelsContext';
 
 const EditNoteScreen = () => {
+  const { notes, setNotes } = useContext(NotesContext);
+  const { labels } = useContext(LabelsContext);
   const route = useRoute();
   const navigation = useNavigation();
   const { noteId } = route.params;
-  const [note, setNote] = useState(NOTES.find(n => n.id === noteId));
+  const [note, setNote] = useState(notes.find(n => n.id === noteId));
   const [isBookmarked, setIsBookmarked] = useState(note ? note.isBookmarked : false);
   const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
   const [selectedColor, setSelectedColor] = useState(note ? note.color : null);
@@ -22,7 +26,7 @@ const EditNoteScreen = () => {
   }, [route.params?.updatedLabels]);
 
   const getLabelText = (labelId) => {
-    const label = LABELS.find(label => label.id === labelId);
+    const label = labels.find(label => label.id === labelId);
     return label ? label.label : labelId;
   };
 
@@ -36,11 +40,11 @@ const EditNoteScreen = () => {
         updateAt: new Date().toISOString(),
       };
 
-      const noteIndex = NOTES.findIndex(n => n.id === note.id);
+      const noteIndex = notes.findIndex(n => n.id === note.id);
       if (noteIndex !== -1) {
-        NOTES[noteIndex] = updatedNote;
-      } else {
-        NOTES.push(updatedNote);
+        const updatedNotes = [...notes];
+        updatedNotes[noteIndex] = updatedNote;
+        setNotes(updatedNotes);
       }
 
       navigation.navigate('Home', { updatedNote });
@@ -48,10 +52,8 @@ const EditNoteScreen = () => {
   };
 
   const deleteNoteHandler = () => {
-    const noteIndex = NOTES.findIndex(n => n.id === note.id);
-    if (noteIndex !== -1) {
-      NOTES.splice(noteIndex, 1);
-    }
+    const updatedNotes = notes.filter(n => n.id !== note.id);
+    setNotes(updatedNotes);
     navigation.goBack();
   };
 

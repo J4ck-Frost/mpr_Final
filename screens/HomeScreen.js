@@ -1,53 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { NOTES } from '../data/dummy-data';
 import NoteItem from '../components/NoteItem';
+import { NotesContext } from '../context/NotesContext';
+import { LabelsContext } from '../context/LabelsContext';
 
-const HomeScreen = ({ route }) => {
-  const [notes, setNotes] = useState(NOTES);
+const HomeScreen = () => {
+  const { notes } = useContext(NotesContext);
+  const { labels } = useContext(LabelsContext);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchVisible, setIsSearchVisible] = useState(false);
-  const [filteredNotes, setFilteredNotes] = useState(NOTES);
+  const [filteredNotes, setFilteredNotes] = useState(notes);
   const navigation = useNavigation();
   const isFocused = useIsFocused();
 
   useEffect(() => {
-    if (route.params?.newNote && isFocused) {
-      const newNote = {
-        ...route.params.newNote,
-        updateAt: new Date(route.params.newNote.updateAt), // Convert back to Date object
-      };
-      setNotes((prevNotes) => {
-        if (prevNotes.some(note => note.id === newNote.id)) {
-          return prevNotes;
-        }
-        const updatedNotes = [...prevNotes, newNote];
-        NOTES.push(newNote); // Update the global NOTES array
-        return updatedNotes;
-      });
-      setFilteredNotes((prevNotes) => {
-        if (prevNotes.some(note => note.id === newNote.id)) {
-          return prevNotes;
-        }
-        return [...prevNotes, newNote];
-      });
+    if (isFocused) {
+      setFilteredNotes(notes);
     }
-
-    if (route.params?.updatedNote && isFocused) {
-      const updatedNote = {
-        ...route.params.updatedNote,
-        updateAt: new Date(route.params.updatedNote.updateAt), // Convert back to Date object
-      };
-      setNotes((prevNotes) =>
-        prevNotes.map((note) => (note.id === updatedNote.id ? updatedNote : note))
-      );
-      setFilteredNotes((prevNotes) =>
-        prevNotes.map((note) => (note.id === updatedNote.id ? updatedNote : note))
-      );
-    }
-  }, [route.params?.newNote, route.params?.updatedNote, isFocused]);
+  }, [notes, isFocused]);
 
   useEffect(() => {
     const filtered = notes.filter((note) =>
@@ -81,7 +53,7 @@ const HomeScreen = ({ route }) => {
       ) : (
         <FlatList
           data={filteredNotes}
-          renderItem={({ item }) => <NoteItem item={item} />}
+          renderItem={({ item }) => <NoteItem item={item} labels={labels} />}
           keyExtractor={(item) => item.id}
           style={styles.notesList}
         />

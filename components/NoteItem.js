@@ -1,15 +1,14 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { LABELS } from '../data/dummy-data';
 import { useNavigation } from '@react-navigation/native';
 
-const getLabelText = (labelId) => {
-  const label = LABELS.find(label => label.id === labelId);
+const getLabelText = (labelId, labels) => {
+  const label = labels.find(label => label.id === labelId);
   return label ? label.label : labelId;
 };
 
-const NoteItem = ({ item }) => {
+const NoteItem = ({ item, labels }) => {
   const navigation = useNavigation();
 
   return (
@@ -20,7 +19,7 @@ const NoteItem = ({ item }) => {
       <Text style={styles.noteTime}>{`${new Date(item.updateAt).toLocaleDateString()} ${new Date(item.updateAt).toLocaleTimeString()}`}</Text>
       <View style={styles.labelContainer}>
         {item.labelIds.map(labelId => (
-          <Text key={labelId} style={styles.label}>{getLabelText(labelId)}</Text>
+          <Text key={labelId} style={styles.label}>{getLabelText(labelId, labels)}</Text>
         ))}
       </View>
       <Text style={styles.noteContent}>{item.content}</Text>

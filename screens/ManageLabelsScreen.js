@@ -1,20 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
-import { LABELS } from '../data/dummy-data';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { LabelsContext } from '../context/LabelsContext';
 
 const ManageLabelsScreen = () => {
+  const { labels } = useContext(LabelsContext);
   const route = useRoute();
   const navigation = useNavigation();
   const { noteId, selectedLabels } = route.params;
-  const [labels, setLabels] = useState(selectedLabels || []);
+  const [labelIds, setLabelIds] = useState(selectedLabels || []);
 
   useEffect(() => {
-    setLabels(selectedLabels || []);
+    setLabelIds(selectedLabels || []);
   }, [selectedLabels]);
 
   const toggleLabel = (labelId) => {
-    setLabels((prevLabels) => {
+    setLabelIds((prevLabels) => {
       if (prevLabels.includes(labelId)) {
         return prevLabels.filter((id) => id !== labelId);
       } else {
@@ -24,24 +25,24 @@ const ManageLabelsScreen = () => {
   };
 
   const saveLabelsHandler = () => {
-    navigation.navigate('EditNote', { noteId, updatedLabels: labels });
+    navigation.navigate('EditNote', { noteId, updatedLabels: labelIds });
   };
 
   return (
     <View style={styles.container}>
       <FlatList
-        data={LABELS}
+        data={labels}
         renderItem={({ item }) => (
           <TouchableOpacity
             style={[
               styles.labelItem,
-              labels.includes(item.id) ? styles.selectedLabel : styles.unselectedLabel,
+              labelIds.includes(item.id) ? styles.selectedLabel : styles.unselectedLabel,
             ]}
             onPress={() => toggleLabel(item.id)}
           >
             <Text style={[
               styles.labelText,
-              labels.includes(item.id) ? styles.selectedLabelText : styles.unselectedLabelText,
+              labelIds.includes(item.id) ? styles.selectedLabelText : styles.unselectedLabelText,
             ]}>
               {item.label}
             </Text>
@@ -70,13 +71,14 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 1,
   },
   selectedLabel: {
     backgroundColor: '#007BFF',
+    borderColor: '#007BFF',
   },
   unselectedLabel: {
     backgroundColor: '#f0f0f0',
-    borderWidth: 1,
     borderColor: '#ccc',
   },
   labelText: {
