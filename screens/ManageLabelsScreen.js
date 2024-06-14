@@ -1,21 +1,21 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import React, { useState, useContext, useEffect } from 'react';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { LabelsContext } from '../context/LabelsContext';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 const ManageLabelsScreen = () => {
   const { labels } = useContext(LabelsContext);
   const route = useRoute();
   const navigation = useNavigation();
   const { noteId, selectedLabels } = route.params;
-  const [labelIds, setLabelIds] = useState(selectedLabels || []);
+  const [labelsState, setLabelsState] = useState(selectedLabels || []);
 
   useEffect(() => {
-    setLabelIds(selectedLabels || []);
+    setLabelsState(selectedLabels || []);
   }, [selectedLabels]);
 
   const toggleLabel = (labelId) => {
-    setLabelIds((prevLabels) => {
+    setLabelsState((prevLabels) => {
       if (prevLabels.includes(labelId)) {
         return prevLabels.filter((id) => id !== labelId);
       } else {
@@ -25,29 +25,35 @@ const ManageLabelsScreen = () => {
   };
 
   const saveLabelsHandler = () => {
-    navigation.navigate('EditNote', { noteId, updatedLabels: labelIds });
+    navigation.navigate('EditNote', { noteId, updatedLabels: labelsState });
   };
+
+  const renderLabelItem = ({ item }) => (
+    <TouchableOpacity
+      style={[
+        styles.labelItem,
+        labelsState.includes(item.id) ? styles.selectedLabel : styles.unselectedLabel,
+      ]}
+      onPress={() => toggleLabel(item.id)}
+    >
+      <Text style={[
+        styles.labelText,
+        labelsState.includes(item.id) ? styles.selectedLabelText : styles.unselectedLabelText,
+      ]}>
+        {item.label}
+      </Text>
+    </TouchableOpacity>
+  );
+
+  const totalLabels = labels.length;
+  const selectedLabelsCount = labelsState.length;
 
   return (
     <View style={styles.container}>
+      <Text style={styles.labelCount}>{`${totalLabels} total, ${selectedLabelsCount} selected`}</Text>
       <FlatList
         data={labels}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={[
-              styles.labelItem,
-              labelIds.includes(item.id) ? styles.selectedLabel : styles.unselectedLabel,
-            ]}
-            onPress={() => toggleLabel(item.id)}
-          >
-            <Text style={[
-              styles.labelText,
-              labelIds.includes(item.id) ? styles.selectedLabelText : styles.unselectedLabelText,
-            ]}>
-              {item.label}
-            </Text>
-          </TouchableOpacity>
-        )}
+        renderItem={renderLabelItem}
         keyExtractor={(item) => item.id}
         numColumns={2} // Display labels in two columns
         columnWrapperStyle={styles.columnWrapper} // Style for the row
@@ -64,6 +70,12 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
   },
+  labelCount: {
+    color: '#007BFF',
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 16,
+  },
   labelItem: {
     flex: 1,
     padding: 12,
@@ -71,14 +83,13 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
   },
   selectedLabel: {
     backgroundColor: '#007BFF',
-    borderColor: '#007BFF',
   },
   unselectedLabel: {
     backgroundColor: '#f0f0f0',
+    borderWidth: 1,
     borderColor: '#ccc',
   },
   labelText: {

@@ -52,7 +52,7 @@ const EditNoteScreen = () => {
   };
 
   const deleteNoteHandler = () => {
-    const updatedNotes = notes.filter(n => n.id !== note.id);
+    const updatedNotes = notes.map(n => n.id === note.id ? { ...n, isDeleted: true } : n);
     setNotes(updatedNotes);
     navigation.goBack();
   };

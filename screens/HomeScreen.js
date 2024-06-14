@@ -1,59 +1,69 @@
+// screens/HomeScreen.js
 import React, { useContext, useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import NoteItem from '../components/NoteItem';
 import { NotesContext } from '../context/NotesContext';
 import { LabelsContext } from '../context/LabelsContext';
+import SearchBar from '../components/SearchBar';
 
 const HomeScreen = () => {
   const { notes } = useContext(NotesContext);
   const { labels } = useContext(LabelsContext);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchVisible, setIsSearchVisible] = useState(false);
-  const [filteredNotes, setFilteredNotes] = useState(notes);
+  const [filteredNotes, setFilteredNotes] = useState([]);
   const navigation = useNavigation();
   const isFocused = useIsFocused();
 
   useEffect(() => {
     if (isFocused) {
-      setFilteredNotes(notes);
+      setFilteredNotes(notes.filter(note => !note.isDeleted));
     }
   }, [notes, isFocused]);
 
   useEffect(() => {
-    const filtered = notes.filter((note) =>
-      note.content.toLowerCase().includes(searchQuery.toLowerCase())
+    const filtered = notes.filter(
+      note => note.content.toLowerCase().includes(searchQuery.toLowerCase()) && !note.isDeleted
     );
     setFilteredNotes(filtered);
   }, [searchQuery, notes]);
+
+  const noteCountText = searchQuery
+    ? `${filteredNotes.length} notes found`
+    : `Total notes: ${notes.filter(note => !note.isDeleted).length}`;
+
+  const handleNotePress = (noteId) => {
+    navigation.navigate('EditNote', { noteId });
+  };
+
+  const toggleSearch = () => {
+    setIsSearchVisible(!isSearchVisible);
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Notes</Text>
-        <TouchableOpacity onPress={() => setIsSearchVisible(!isSearchVisible)}>
-          <Ionicons name="search" size={24} color="black" />
-        </TouchableOpacity>
+        <SearchBar
+          isVisible={isSearchVisible}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          toggleSearch={toggleSearch}
+        />
       </View>
 
-      {isSearchVisible && (
-        <View style={styles.searchContainer}>
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search notes"
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
-        </View>
+      {filteredNotes.length > 0 && (
+        <Text style={styles.noteCount}>{noteCountText}</Text>
       )}
 
       {filteredNotes.length === 0 ? (
-        <Text style={styles.noNotesText}>{searchQuery ? 'Not found!' : 'Please add a new note'}</Text>
+        <Text style={styles.noNotesText}>{searchQuery ? 'Not found!' : 'No Notes \n Tap + icon to create new note'}</Text>
       ) : (
         <FlatList
           data={filteredNotes}
-          renderItem={({ item }) => <NoteItem item={item} labels={labels} />}
+          renderItem={({ item }) => <NoteItem item={item} labels={labels} onPress={handleNotePress} />}
           keyExtractor={(item) => item.id}
           style={styles.notesList}
         />
@@ -80,21 +90,15 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   title: {
+    paddingBottom:20,
     fontSize: 24,
     fontWeight: 'bold',
   },
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  noteCount: {
+    color: '#007BFF',
+    fontSize: 16,
+    textAlign: 'center',
     marginBottom: 16,
-    backgroundColor: '#f0f0f0',
-    paddingHorizontal: 10,
-    borderRadius: 10,
-  },
-  searchInput: {
-    flex: 1,
-    height: 40,
-    paddingHorizontal: 10,
   },
   noNotesText: {
     fontSize: 18,

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { NotesContext } from '../context/NotesContext';
 
 const generateUniqueId = (() => {
   let counter = 0;
@@ -17,6 +18,7 @@ const generateUniqueId = (() => {
 const NewNoteScreen = () => {
   const [content, setContent] = useState('');
   const navigation = useNavigation();
+  const { notes, setNotes } = useContext(NotesContext);
 
   const saveNoteHandler = () => {
     if (!content.trim()) {
@@ -31,9 +33,11 @@ const NewNoteScreen = () => {
       color: null,
       labelIds: [],
       isBookmarked: false,
+      isDeleted: false,
     };
 
-    navigation.navigate('Home', { newNote });
+    setNotes([...notes, newNote]);
+    navigation.navigate('Home');
   };
 
   return (

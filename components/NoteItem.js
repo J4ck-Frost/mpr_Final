@@ -1,20 +1,17 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
 
 const getLabelText = (labelId, labels) => {
   const label = labels.find(label => label.id === labelId);
   return label ? label.label : labelId;
 };
 
-const NoteItem = ({ item, labels }) => {
-  const navigation = useNavigation();
-
+const NoteItem = ({ item, labels, onPress }) => {
   return (
     <TouchableOpacity
       style={[styles.noteItem, { borderLeftColor: item.color || '#ddd' }]}
-      onPress={() => navigation.navigate('EditNote', { noteId: item.id })}
+      onPress={() => onPress(item.id)}
     >
       <Text style={styles.noteTime}>{`${new Date(item.updateAt).toLocaleDateString()} ${new Date(item.updateAt).toLocaleTimeString()}`}</Text>
       <View style={styles.labelContainer}>
