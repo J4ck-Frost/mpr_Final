@@ -1,19 +1,28 @@
+// components/NoteItem.js
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 const getLabelText = (labelId, labels) => {
   const label = labels.find(label => label.id === labelId);
   return label ? label.label : labelId;
 };
 
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  return `${date.toLocaleDateString()} ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+};
+
 const NoteItem = ({ item, labels, onPress }) => {
+  const navigation = useNavigation();
+
   return (
     <TouchableOpacity
       style={[styles.noteItem, { borderLeftColor: item.color || '#ddd' }]}
       onPress={() => onPress(item.id)}
     >
-      <Text style={styles.noteTime}>{`${new Date(item.updateAt).toLocaleDateString()} ${new Date(item.updateAt).toLocaleTimeString()}`}</Text>
+      <Text style={styles.noteTime}>Last updated: {formatDate(item.updateAt)}</Text>
       <View style={styles.labelContainer}>
         {item.labelIds.map(labelId => (
           <Text key={labelId} style={styles.label}>{getLabelText(labelId, labels)}</Text>
