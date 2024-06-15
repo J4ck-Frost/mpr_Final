@@ -36,9 +36,9 @@ export default function App() {
           <NavigationContainer>
             <Stack.Navigator initialRouteName="Note">
               <Stack.Screen name="Note" component={Note} options={{ headerShown: false }} />
-              <Stack.Screen name="New Note" component={NewNoteScreen} />
-              <Stack.Screen name="Edit Note" component={EditNoteScreen} />
-              <Stack.Screen name="Manage Labels" component={ManageLabelsScreen} />
+              <Stack.Screen name="NewNote" component={NewNoteScreen} />
+              <Stack.Screen name="EditNote" component={EditNoteScreen} />
+              <Stack.Screen name="ManageLabels" component={ManageLabelsScreen} />
             </Stack.Navigator>
           </NavigationContainer>
         </LabelsProvider>
