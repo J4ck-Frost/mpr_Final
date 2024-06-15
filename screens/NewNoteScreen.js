@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { View, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NotesContext } from '../context/NotesContext';
@@ -22,6 +22,7 @@ const NewNoteScreen = () => {
 
   const saveNoteHandler = () => {
     if (!content.trim()) {
+      Alert.alert('Empty Note', 'Please enter some content before saving.');
       return;
     }
 
@@ -37,7 +38,7 @@ const NewNoteScreen = () => {
     };
 
     setNotes([...notes, newNote]);
-    navigation.navigate('Home');
+    navigation.navigate('Note');
   };
 
   return (
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
     marginBottom: 16,
-    textAlignVertical:'top',
+    textAlignVertical: 'top',
   },
   actionButton: {
     position: 'absolute',

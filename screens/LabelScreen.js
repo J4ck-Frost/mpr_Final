@@ -1,5 +1,5 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { View, Text,TextInput, FlatList, TouchableOpacity, StyleSheet, Modal } from 'react-native';
+import React, { useContext, useState, useEffect } from 'react';
+import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LabelsContext } from '../context/LabelsContext';
 import { NotesContext } from '../context/NotesContext';
@@ -145,6 +145,9 @@ const LabelScreen = () => {
               <TouchableOpacity style={styles.modalButton} onPress={handleAddLabel}>
                 <Text style={styles.modalButtonText}>Create</Text>
               </TouchableOpacity>
+              <TouchableOpacity style={styles.cancelButton} onPress={() => setIsCreateModalVisible(false)}>
+                <Text style={styles.modalButtonText}>Cancel</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -171,6 +174,9 @@ const LabelScreen = () => {
               </TouchableOpacity>
               <TouchableOpacity style={[styles.modalButton, styles.deleteButton]} onPress={handleDeleteLabel}>
                 <Text style={styles.modalButtonText}>Delete</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.modalButton} onPress={() => setIsEditModalVisible(false)}>
+                <Text style={styles.modalButtonText}>Cancel</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -273,6 +279,15 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 16,
     backgroundColor: '#007BFF',
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  cancelButton: {
+    flex: 1,
+    marginHorizontal: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    backgroundColor: '#ccc',
     borderRadius: 8,
     alignItems: 'center',
   },

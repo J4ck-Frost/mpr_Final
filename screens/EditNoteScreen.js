@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, TextInput, TouchableOpacity, Text, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import Modal from 'react-native-modal';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -31,6 +31,10 @@ const EditNoteScreen = () => {
   };
 
   const saveNoteHandler = () => {
+    if (!note.content.trim()) {
+      Alert.alert('Empty Note', 'Please enter some content before saving.');
+      return;
+    }
     if (note) {
       const updatedNote = {
         ...note,
@@ -47,7 +51,7 @@ const EditNoteScreen = () => {
         setNotes(updatedNotes);
       }
 
-      navigation.navigate('Home', { updatedNote });
+      navigation.navigate('Note', { updatedNote });
     }
   };
 
