@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import Modal from 'react-native-modal';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -71,7 +71,11 @@ const EditNoteScreen = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : null}
+      keyboardVerticalOffset={90} // adjust this value if needed
+    >
       <View style={styles.labelContainer}>
         {selectedLabels.map(labelId => (
           <Text key={labelId} style={styles.label}>{getLabelText(labelId)}</Text>
@@ -86,7 +90,7 @@ const EditNoteScreen = () => {
         />
       </View>
       <View style={styles.bottomTab}>
-        <Text style={styles.noteTime}>{`Edited ${new Date(note.updateAt).toLocaleString()}`}</Text>
+        <Text style={styles.noteTime}>{`Edited ${new Date(note.updateAt).toLocaleDateString()} ${new Date(note.updateAt).toLocaleTimeString().slice(0, 5)}`}</Text>
         <TouchableOpacity onPress={() => setIsBookmarked(!isBookmarked)}>
           <Ionicons name={isBookmarked ? 'bookmark' : 'bookmark-outline'} size={24} color="black" />
         </TouchableOpacity>
@@ -132,10 +136,10 @@ const EditNoteScreen = () => {
         </View>
       </Modal>
 
-      <TouchableOpacity style={styles.actionButton} onPress={saveNoteHandler}>
+      <TouchableOpacity style={styles.confirmButton} onPress={saveNoteHandler}>
         <Ionicons name="checkmark" size={24} color="white" />
       </TouchableOpacity>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -159,12 +163,13 @@ const styles = StyleSheet.create({
   inputContainer: {
     flex: 1,
     borderRadius: 8,
-    padding: 8,
+    padding: 15,
     marginBottom: 16,
   },
   input: {
     flex: 1,
     fontSize: 16,
+    textAlignVertical: 'top'
   },
   bottomTab: {
     flexDirection: 'row',
@@ -178,7 +183,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#555',
   },
-  actionButton: {
+  confirmButton: {
     position: 'absolute',
     right: 16,
     bottom: 90,

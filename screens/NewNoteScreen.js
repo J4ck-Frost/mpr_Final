@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
     marginBottom: 16,
+    textAlignVertical:'top',
   },
   actionButton: {
     position: 'absolute',

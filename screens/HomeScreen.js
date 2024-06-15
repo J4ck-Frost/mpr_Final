@@ -44,8 +44,7 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Notes</Text>
+      <View style={styles.header}>        
         <SearchBar
           isVisible={isSearchVisible}
           searchQuery={searchQuery}
@@ -85,9 +84,7 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
   },
   title: {
     paddingBottom:20,
@@ -97,8 +94,8 @@ const styles = StyleSheet.create({
   noteCount: {
     color: '#007BFF',
     fontSize: 16,
-    textAlign: 'center',
-    marginBottom: 16,
+    textAlign: 'left',
+
   },
   noNotesText: {
     fontSize: 18,

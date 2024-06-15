@@ -93,7 +93,6 @@ const LabelScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Labels</Text>
         <SearchBar
           isVisible={isSearchVisible}
           searchQuery={searchQuery}
@@ -188,9 +187,7 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
   },
   title: {
     paddingBottom:20,
@@ -200,8 +197,7 @@ const styles = StyleSheet.create({
   labelCount: {
     color: '#007BFF',
     fontSize: 16,
-    textAlign: 'center',
-    marginBottom: 16,
+    textAlign: 'left',
   },
   noLabelsText: {
     color: 'black',
@@ -234,7 +230,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     alignSelf: 'center',
-    marginBottom: 16,
+    marginTop:20,
     width: '80%',
   },
   createButtonText: {

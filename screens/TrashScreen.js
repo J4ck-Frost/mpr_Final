@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     color: '#007BFF',
     fontSize: 16,
     textAlign: 'left',
-    marginBottom: 16,
+    
   },
   noNotesText: {
     fontSize: 18,

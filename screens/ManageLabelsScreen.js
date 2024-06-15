@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   labelCount: {
     color: '#007BFF',
     fontSize: 16,
-    textAlign: 'center',
+    textAlign: 'left',
     marginBottom: 16,
   },
   labelItem: {
